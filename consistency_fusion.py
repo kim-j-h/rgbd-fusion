@@ -6,20 +6,20 @@ from plyfile import PlyData, PlyElement
 import torch
 from torch.utils.data import DataLoader, SequentialSampler
 
-from .datasets.rgbd_dataset import MVSRGBD
-from .utils import to_device
-from .modules import geometry as fusion_func
+from datasets.rgbd_dataset import MVSRGBD
+from utils import to_device
+from modules import geometry as fusion_func
 
 
 def parse_args():
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument(
-        'main_cfg_path', type=str, help='main config path')
+    # parser.add_argument(
+    #     'main_cfg_path', type=str, help='main config path')
     parser.add_argument(
         '--dataset_dir', type=str, help='evaluation dataset')
     parser.add_argument(
-        '--nview_thr', type=str, help='number of consistent views')
+        '--nview_thr', type=int, help='number of consistent views')
     parser.add_argument(
         '--disp_thr', type=float, default=1.0, help='disparity threshold for geometric consistency')
     parser.add_argument(
@@ -61,7 +61,7 @@ def main(args, rgbd_dir, img_pair_file, out_filename, device=torch.device("cpu")
         #dir_vecs = cam_center.unsqueeze(-1).unsqueeze(-1) - points
 
         points_np = points.cpu().data.numpy()
-        mask_np = mask.cpu().data.numpy().astype(np.bool)
+        mask_np = mask.cpu().data.numpy().astype(bool)
         #dir_vecs = dir_vecs.cpu().data.numpy()
         ref_img = sample_np['ref_img'].data.numpy()
         for i in range(points_np.shape[0]):
@@ -95,7 +95,7 @@ def main(args, rgbd_dir, img_pair_file, out_filename, device=torch.device("cpu")
 
 if __name__ == "__main__":
     args = parse_args()
-    pprint.pprint(vars(args))
+    pprint(vars(args))
 
     dataset_dir = args.dataset_dir
     img_pair_file = f"{dataset_dir}/pair.txt"

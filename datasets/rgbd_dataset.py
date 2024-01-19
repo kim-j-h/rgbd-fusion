@@ -69,13 +69,13 @@ class MVSRGBD(Dataset):
         id_srcs = id_srcs[:self.n_src_views]
 
         ref_intrinsics, ref_extrinsics = read_camera_parameters(
-            os.path.join(self.scan_folder, 'post_cams/{:0>8}_cam.txt'.format(id_ref)))
+            os.path.join(self.scan_folder, 'cams/{:0>8}_cam.txt'.format(id_ref)))
         ref_cam = np.zeros((2, 4, 4), dtype=np.float32)
         ref_cam[0] = ref_extrinsics
         ref_cam[1, :3, :3] = ref_intrinsics
         ref_cam[1, 3, 3] = 1.0
         # load the reference image
-        ref_img = read_img(os.path.join(self.scan_folder, 'post_images/{:0>8}.jpg'.format(id_ref)))
+        ref_img = read_img(os.path.join(self.scan_folder, 'images/{:0>8}.jpg'.format(id_ref)))
         ref_img = ref_img.transpose([2, 0, 1])
         # load the estimated depth of the reference view
         ref_depth_est = read_pfm(os.path.join(self.scan_folder, 'depth_est/{:0>8}.pfm'.format(id_ref)))[0]
@@ -87,7 +87,7 @@ class MVSRGBD(Dataset):
         src_depths, src_confs, src_cams = [], [], []
         for ids in id_srcs:
             src_intrinsics, src_extrinsics = read_camera_parameters(
-                os.path.join(self.scan_folder, 'post_cams/{:0>8}_cam.txt'.format(ids)))
+                os.path.join(self.scan_folder, 'cams/{:0>8}_cam.txt'.format(ids)))
             src_proj = np.zeros((2, 4, 4), dtype=np.float32)
             src_proj[0] = src_extrinsics
             src_proj[1, :3, :3] = src_intrinsics
